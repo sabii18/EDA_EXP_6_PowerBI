@@ -1,61 +1,148 @@
-**Case Study: Healthcare Patient Tracking Analysis using Power BI**
-**Aim**
+# Healthcare Patient Tracking Analysis – Power BI
 
-To analyze a healthcare patient tracking dataset using Power BI, perform data preparation and exploratory analysis, create suitable calculations and visualizations, and develop an interactive dashboard to support patient monitoring and operational decision-making.
+## Aim
 
-**Case Study**
-A healthcare organization maintains patient tracking information such as patient status, admission and discharge dates, approved days, insurance details, authorization information, and extension requirements.
+To analyze healthcare patient tracking data using Power BI and develop an interactive dashboard for monitoring patient status, stay duration, insurance, extensions, and authorization details.
 
-As a data analyst, analyze the given dataset and develop a Power BI dashboard that helps hospital staff understand the current patient situation and identify cases that may require attention.
+## Procedure
 
-**Procedure**
+1. Imported the healthcare patient tracking dataset from Excel into Power BI.
+2. Cleaned and transformed the data using Power Query.
+3. Removed unnecessary blank columns and unwanted blank records.
+4. Trimmed spaces from text fields and verified appropriate data types.
+5. Created DAX calculations for patient count, actual stay, expected stay, stay variance, and discharge variance.
+6. Analyzed patient status, insurance, extension, and authorization information.
+7. Identified relationships between insurance and patient status, and between extension and authorization.
+8. Created charts, KPI cards, a matrix, table, and date slicer.
+9. Designed an interactive one-page healthcare tracking dashboard.
+10. Derived key insights and recommendations from the analysis.
 
-**1. Import the Dataset**
+## DAX Measures and Calculations
 
-Import the given Healthcare Patient Tracking Excel dataset into Power BI.
+### Total Patients
 
-**2. Data Preparation**
+```
+Total Patients =
+COUNTROWS('Healthcare Patients')
+```
+## Active Patients
+```
+Active Patients =
+CALCULATE(
+    [Total Patients],
+    'Healthcare Patients'[Status] = "Active"
+)
+```
+## Discharged Patients
+```
+Discharged Patients =
+CALCULATE(
+    [Total Patients],
+    'Healthcare Patients'[Status] = "Discharged"
+)
+```
+## Pending Extension
+```
+Pending Extension =
+CALCULATE(
+    [Total Patients],
+    'Healthcare Patients'[Status] = "Pending Extension"
+)
+```
+## Actual Stay Days
+```
+Actual Stay Days =
+IF(
+    ISBLANK('Healthcare Patients'[Actual Discharge Date]),
+    BLANK(),
+    DATEDIFF(
+        'Healthcare Patients'[Admission Date],
+        'Healthcare Patients'[Actual Discharge Date],
+        DAY
+    )
+)
+```
+## Expected Stay Days
+```
+Expected Stay Days =
+IF(
+    ISBLANK('Healthcare Patients'[Admission Date]) ||
+    ISBLANK('Healthcare Patients'[Estimated Discharge]),
+    BLANK(),
+    DATEDIFF(
+        'Healthcare Patients'[Admission Date],
+        'Healthcare Patients'[Estimated Discharge],
+        DAY
+    )
+)
+```
+## Stay Variance
+```
+Stay Variance =
+IF(
+    ISBLANK('Healthcare Patients'[Actual Stay Days]),
+    BLANK(),
+    'Healthcare Patients'[Actual Stay Days]
+        - 'Healthcare Patients'[Days Approved]
+)
+```
+## Discharge Variance
+```
+Discharge Variance =
+IF(
+    ISBLANK('Healthcare Patients'[Actual Discharge Date]),
+    BLANK(),
+    DATEDIFF(
+        'Healthcare Patients'[Estimated Discharge],
+        'Healthcare Patients'[Actual Discharge Date],
+        DAY
+    )
+)
+```
 
-Open Power Query and perform the necessary data-cleaning operations based on the dataset, such as:
+## Dashboard Visuals
+* **Total Patients** – KPI Card
+* **Active Patients** – KPI Card
+* **Discharged Patients** – KPI Card
+* **Pending Extension** – KPI Card
+* **Patient Status Distribution** – Donut Chart
+* **Patient Distribution by Insurance** – Bar Chart
+* **Patient Extension Status** – Column Chart
+* **Patient Authorization Status** – Column Chart
+* **Insurance vs Patient Status** – Stacked Column Chart
+* **Extension vs Authorization Status** – Matrix
+* **Actual Stay Days by Patient** – Column Chart
+* **Admission Date** – Slicer
 
-Removing unnecessary columns
-Renaming columns
-Correcting data types
-Handling missing or incorrect values
-Filtering unnecessary records
+# An interactive Power BI dashboard was created to provide a consolidated view of healthcare patient tracking information.
 
-**3. Understand and Analyze the Data**
+| Metric | Result |
+| :--- | :--- |
+| Total Patients | 46 |
+| Active Patients | 28 |
+| Discharged Patients | 10 |
+| Pending Extension | 8 |
+| Highest Insurance | Aetna – 9 patients |
+| Longest Actual Stay | 34 days |
+## Key Insights
+* **Patient Distribution:** Active patients constitute the largest group, accounting for 28 of the 46 total patients.
+* **Status Breakdown:** 10 patients are currently discharged, while 8 remain in "Pending Extension" status.
+* **Insurance Trends:** Aetna represents the highest patient volume, covering 9 patients.
+* **Stay Duration:** Analysis reveals that several discharged patients remained hospitalized beyond their estimated discharge dates.
+* **Operational Focus:** Monitoring extension and authorization statuses is essential to identify cases requiring immediate administrative follow-up.
+## Recommendations
+Monitor patients approaching or exceeding their approved stay duration for timely extension and authorization follow-up.
+Use the dashboard to support discharge planning and identify patients requiring insurance or authorization attention.
+## Tools Used
+* **Power BI:** Data visualization and dashboard creation.
+* **Power Query:** Data cleaning, transformation, and preparation.
+* **DAX:** Calculated measures and metrics for performance analysis.
+* **Microsoft Excel:** Source data management.
 
-Explore the available fields and identify important information related to:
-
-    Patient status
-    Admission and discharge
-    Approved days and patient stay
-    Insurance
-    Authorization
-    Extensions
-    Other relevant patient information
-
-**4. Create Required Calculations**
-Create appropriate DAX measures or calculated columns wherever required for the analysis.
-
-
-
-
-
-**5. Perform Exploratory Analysis**
-
-
-
-**6. Develop an Interactive Dashboard**
+## Dashboard 
+<img width="837" height="628" alt="Screenshot 2026-09-11 165112" src="https://github.com/user-attachments/assets/9459e17c-8765-487b-b0cd-d49e5d42a66f" />
 
 
-**7. Identify Insights and Recommendations**
+## Result
 
-
-
-
-**Output**
-
-**Result**
-Thus, the healthcare patient tracking data was successfully analyzed using Power BI, and an interactive dashboard was developed to identify important patient patterns, cases requiring attention, and operational insights for healthcare management.
+The healthcare patient tracking data was successfully cleaned, analyzed, and visualized in Power BI. The resulting dashboard provides an interactive view of patient status, insurance, stay duration, extensions, and authorization information.
